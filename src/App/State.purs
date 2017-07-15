@@ -1,7 +1,6 @@
 module App.State where
 
 import App.Config (config)
-import App.Routes (Route, match)
 import Data.Newtype (class Newtype)
 import Data.Show (class Show)
 import Data.Eq (class Eq)
@@ -21,14 +20,12 @@ newtype State = State
   , avatar :: String
   , interestRate :: Number
   , gender :: Gender
-  , route :: Route
-  , loaded :: Boolean
   }
 
 derive instance newtypeState :: Newtype State _
 
-init :: String -> State
-init url = State
+init :: State
+init = State
   { title: config.title
   , name: "hello"
   , biography: "yo"
@@ -38,8 +35,6 @@ init url = State
   , avatar: ""
   , interestRate: 0.2
   , gender: Male
-  , route: match url
-  , loaded: false
   }
 
 title :: Lens' State String
