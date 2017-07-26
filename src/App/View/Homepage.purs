@@ -7,8 +7,8 @@ import Pux.DOM.HTML (HTML)
 import Text.Smolder.HTML (div, p, b)
 import Text.Smolder.Markup (text)
 
-import Pux.Form (form, (.+), (.|), (.\), (./), (.?))
 import Pux.Form.Render (asTextArea, asPassword, asFile, asRange, asRangeNum, asDropdown, asDropdown')
+import Pux.Form (form, (.|), (.\), (./))
 
 view :: State -> HTML Event
 view (s@State s') =
@@ -23,16 +23,16 @@ view (s@State s') =
     p $ text ("Interest rate:" <> show s'.interestRate)
     p $ text ("Your gender:"   <> show s'.gender)
     form s fields Replace
-  where fields = title                           .\ "Enter title"      .? ((/=) "hi")
-              .+ age                              .\ "Enter age"       .? (_ < 100)
-              .+ (asRange age 10 100 2)            .\ "Input age as Range"
-              .+ name                               .| (\d-> (b $ text "before") *> d *> (b $ text "after"))
-              .+ name                              ./ (b $ text "Enter name")
-              .+ (asPassword password)             .\ "Enter your password"
-              .+ (asTextArea biography)             .\ "Enter biography in text area"
-              .+ alive                               .\ "Are you alive?"
-              .+ (asFile avatar)                      .\ "Choose your avatar"
-              .+ interestRate                          .\ "Interest rate"
-              .+ (asRangeNum interestRate 0.1 10.0 0.2) .\ "Interest rate"
-              .+ (asDropdown gender)                     .\ "Your gender?"
-              .+ (asDropdown' gender [Male, Female])      .\ "Your gender?"
+  where fields = title                               .\ "Enter title"
+              <> age                                  .\ "Enter age"
+              <> (asRange 10 100 2 >>> age)            .\ "Input age as Range"
+              <> name                                   .| (\d-> (b $ text "before") *> d *> (b $ text "after"))
+              <> name                                  ./ (b $ text "Enter name")
+              <> (asPassword >>> password)             .\ "Enter your password"
+              <> (asTextArea >>> biography)             .\ "Enter biography in text area"
+              <> alive                                   .\ "Are you alive?"
+              <> (asFile >>> avatar)                      .\ "Choose your avatar"
+              <> interestRate                              .\ "Interest rate"
+              <> (asRangeNum 0.1 10.0 0.2 >>> interestRate) .\ "Interest rate"
+              <> (asDropdown >>> gender)                     .\ "Your gender?"
+              <> (asDropdown' [Male, Female] >>> gender)      .\ "Your gender?"
