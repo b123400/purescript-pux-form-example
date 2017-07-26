@@ -4,11 +4,13 @@ import App.Config (config)
 import Data.Newtype (class Newtype)
 import Data.Show (class Show)
 import Data.Eq (class Eq)
+import Data.Maybe (Maybe(..))
 
 import Data.Lens (Lens', lens)
 import Pux.Form.Render (class MultipleChoice)
 
 data Gender = Male | Female | Secret
+data Food = Rice | Noodle
 
 newtype State = State
   { title :: String
@@ -18,8 +20,9 @@ newtype State = State
   , alive :: Boolean
   , password :: String
   , avatar :: String
-  , interestRate :: Number
+  , height :: Number
   , gender :: Gender
+  , lunch :: Maybe Food
   }
 
 derive instance newtypeState :: Newtype State _
@@ -33,8 +36,9 @@ init = State
   , alive: true
   , password: "hey"
   , avatar: ""
-  , interestRate: 0.2
+  , height: 0.2
   , gender: Male
+  , lunch: Nothing
   }
 
 title :: Lens' State String
@@ -58,11 +62,14 @@ password = lens (\(State s)-> s.password) (\(State s) val-> State s { password =
 avatar :: Lens' State String
 avatar = lens (\(State s)-> s.avatar) (\(State s) val-> State s { avatar = val })
 
-interestRate :: Lens' State Number
-interestRate = lens (\(State s)-> s.interestRate) (\(State s) val-> State s { interestRate = val })
+height :: Lens' State Number
+height = lens (\(State s)-> s.height) (\(State s) val-> State s { height = val })
 
 gender :: Lens' State Gender
 gender = lens (\(State s)-> s.gender) (\(State s) val-> State s { gender = val })
+
+lunch :: Lens' State (Maybe Food)
+lunch = lens (\(State s)-> s.lunch) (\(State s) val-> State s { lunch = val })
 
 instance multipleChoiceGender :: MultipleChoice Gender where
   choices = [Male, Female, Secret]
@@ -73,3 +80,12 @@ instance showGender :: Show Gender where
   show Male = "Male"
   show Female = "Female"
   show Secret = "Secret"
+
+instance multipleChoiceFood :: MultipleChoice Food where
+  choices = [Rice, Noodle]
+
+derive instance eqFood :: Eq Food
+
+instance showFood :: Show Food where
+  show Rice = "Rice"
+  show Noodle = "Noodle"

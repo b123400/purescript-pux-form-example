@@ -2,13 +2,33 @@ module App.View.Homepage where
 
 import Prelude hiding (div)
 import App.Events (Event(..))
-import App.State (State(..), Gender(..), title, name, biography, age, alive, password, avatar, interestRate, gender)
+import App.State
+  (State(..)
+  , Gender(..)
+  , title
+  , name
+  , biography
+  , age
+  , alive
+  , password
+  , avatar
+  , height
+  , gender
+  , lunch )
 import Pux.DOM.HTML (HTML)
 import Text.Smolder.HTML (div, p, b)
 import Text.Smolder.Markup (text)
 
-import Pux.Form.Render (asTextArea, asPassword, asFile, asRange, asRangeNum, asDropdown, asDropdown')
 import Pux.Form (form, (.|), (.\), (./))
+import Pux.Form.Render
+  (asTextArea
+  , asPassword
+  , asFile
+  , asRange
+  , asRangeNum
+  , asDropdown
+  , asDropdown'
+  , withNothing )
 
 view :: State -> HTML Event
 view (s@State s') =
@@ -20,8 +40,9 @@ view (s@State s') =
     p $ text ("Password: "     <>      s'.password)
     p $ text ("Alive? "        <> show s'.alive)
     p $ text ("Avatar: "       <>      s'.avatar)
-    p $ text ("Interest rate:" <> show s'.interestRate)
+    p $ text ("Height:"        <> show s'.height)
     p $ text ("Your gender:"   <> show s'.gender)
+    p $ text ("Your lunch:"    <> show s'.lunch)
     form s fields Replace
   where fields = title                               .\ "Enter title"
               <> age                                  .\ "Enter age"
@@ -32,7 +53,8 @@ view (s@State s') =
               <> (asTextArea >>> biography)             .\ "Enter biography in text area"
               <> alive                                   .\ "Are you alive?"
               <> (asFile >>> avatar)                      .\ "Choose your avatar"
-              <> interestRate                              .\ "Interest rate"
-              <> (asRangeNum 0.1 10.0 0.2 >>> interestRate) .\ "Interest rate"
+              <> height                                    .\ "Height"
+              <> (asRangeNum 0.1 10.0 0.2 >>> height)       .\ "Height"
               <> (asDropdown >>> gender)                     .\ "Your gender?"
               <> (asDropdown' [Male, Female] >>> gender)      .\ "Your gender?"
+              <> (asDropdown >>> withNothing >>> lunch)        .\ "Your gender?"
