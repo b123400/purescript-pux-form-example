@@ -1,6 +1,7 @@
 module App.View.Homepage where
 
 import Prelude hiding (div)
+import Data.Maybe (Maybe(..))
 import App.Events (Event(..))
 import App.State
   (State(..)
@@ -14,7 +15,8 @@ import App.State
   , avatar
   , height
   , gender
-  , lunch )
+  , lunch
+  , Food(..) )
 import Pux.DOM.HTML (HTML)
 import Text.Smolder.HTML (div, p, b)
 import Text.Smolder.Markup (text)
@@ -28,7 +30,8 @@ import Pux.Form.Render
   , asRangeNum
   , asDropdown
   , asDropdown'
-  , withNothing )
+  , withNothing
+  , asConstButton )
 
 view :: State -> HTML Event
 view (s@State s') =
@@ -46,15 +49,16 @@ view (s@State s') =
     form s fields Replace
   where fields = title                               .\ "Enter title"
               <> age                                  .\ "Enter age"
-              <> (asRange 10 100 2 >>> age)            .\ "Input age as Range"
+              <> (age <<< asRange 10 100 2)            .\ "Input age as Range"
               <> name                                   .| (\d-> (b $ text "before") *> d *> (b $ text "after"))
               <> name                                  ./ (b $ text "Enter name")
-              <> (asPassword >>> password)             .\ "Enter your password"
-              <> (asTextArea >>> biography)             .\ "Enter biography in text area"
+              <> (password <<< asPassword)             .\ "Enter your password"
+              <> (biography <<< asTextArea)             .\ "Enter biography in text area"
               <> alive                                   .\ "Are you alive?"
-              <> (asFile >>> avatar)                      .\ "Choose your avatar"
+              <> (avatar <<< asFile)                      .\ "Choose your avatar"
               <> height                                    .\ "Height"
-              <> (asRangeNum 0.1 10.0 0.2 >>> height)       .\ "Height"
-              <> (asDropdown >>> gender)                     .\ "Your gender?"
-              <> (asDropdown' [Male, Female] >>> gender)      .\ "Your gender?"
-              <> (asDropdown >>> withNothing >>> lunch)        .\ "Your gender?"
+              <> (height <<< asRangeNum 0.1 10.0 0.2)       .\ "Height"
+              <> (gender <<< asDropdown)                     .\ "Your gender?"
+              <> (gender <<< asDropdown' [Male, Female])      .\ "Your gender?"
+              <> (lunch <<< withNothing <<< asDropdown)        .\ "What was your lunch?"
+              <> (lunch <<< asConstButton (Just Rice) "Rice")   .\ "Set to rice"
