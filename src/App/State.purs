@@ -1,12 +1,14 @@
 module App.State where
 
+import Prelude
 import App.Config (config)
 import Data.Newtype (class Newtype)
-import Data.Show (class Show)
-import Data.Eq (class Eq)
 import Data.Maybe (Maybe(..))
+import Data.Lens.Record (prop)
+import Data.Symbol (SProxy(..))
+import Data.Lens.Iso.Newtype (_Newtype)
 
-import Data.Lens (Lens', lens)
+import Data.Lens (Lens')
 import Pux.Form.Render (class MultipleChoice)
 
 data Gender = Male | Female | Secret
@@ -42,34 +44,34 @@ init = State
   }
 
 title :: Lens' State String
-title = lens (\(State s)-> s.title) (\(State s) val-> State s { title = val })
+title = _Newtype <<< prop (SProxy :: SProxy "title")
 
 name :: Lens' State String
-name = lens (\(State s)-> s.name) (\(State s) val-> State s { name = val })
+name = _Newtype <<< prop (SProxy :: SProxy "name")
 
 biography :: Lens' State String
-biography = lens (\(State s)-> s.biography) (\(State s) val-> State s { biography = val })
+biography = _Newtype <<< prop (SProxy :: SProxy "biography")
 
 age :: Lens' State Int
-age = lens (\(State s)-> s.age) (\(State s) val-> State s { age = val })
+age = _Newtype <<< prop (SProxy :: SProxy "age")
 
 alive :: Lens' State Boolean
-alive = lens (\(State s)-> s.alive) (\(State s) val-> State s { alive = val })
+alive = _Newtype <<< prop (SProxy :: SProxy "alive")
 
 password :: Lens' State String
-password = lens (\(State s)-> s.password) (\(State s) val-> State s { password = val })
+password = _Newtype <<< prop (SProxy :: SProxy "password")
 
 avatar :: Lens' State String
-avatar = lens (\(State s)-> s.avatar) (\(State s) val-> State s { avatar = val })
+avatar = _Newtype <<< prop (SProxy :: SProxy "avatar")
 
 height :: Lens' State Number
-height = lens (\(State s)-> s.height) (\(State s) val-> State s { height = val })
+height = _Newtype <<< prop (SProxy :: SProxy "height")
 
 gender :: Lens' State Gender
-gender = lens (\(State s)-> s.gender) (\(State s) val-> State s { gender = val })
+gender = _Newtype <<< prop (SProxy :: SProxy "gender")
 
 lunch :: Lens' State (Maybe Food)
-lunch = lens (\(State s)-> s.lunch) (\(State s) val-> State s { lunch = val })
+lunch = _Newtype <<< prop (SProxy :: SProxy "lunch")
 
 instance multipleChoiceGender :: MultipleChoice Gender where
   choices = [Male, Female, Secret]
