@@ -1,7 +1,7 @@
 module Main where
 
 import Prelude
-import App.Events (AppEffects, Event(), foldp)
+import App.Events (Event(), foldp)
 import App.State (State, init)
 import App.View.Layout (view)
 import Control.Monad.Eff (Eff)
@@ -13,23 +13,23 @@ import Pux.Renderer.React (renderToDOM)
 
 type WebApp = App (DOMEvent -> Event) Event State
 
-type ClientEffects = CoreEffects (AppEffects (history :: HISTORY, dom :: DOM))
+type ClientEffects = CoreEffects (history :: HISTORY, dom :: DOM)
 
 main :: String -> State -> Eff ClientEffects WebApp
-main url state = do
+main url state =
 
   -- | Start the app.
-  app <- start
+  start
     { initialState: state
     , view
     , foldp
-    , inputs: [] }
+    , inputs: [] } >>= \app->
 
   -- | Render to the DOM
   renderToDOM "#app" app.markup app.input
 
   -- | Return app to be used for hot reloading logic in support/client.entry.js
-  pure app
+  *> pure app
 
 initialState :: State
 initialState = init
