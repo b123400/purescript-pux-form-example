@@ -4,18 +4,15 @@ import Prelude
 import App.Events (Event(), foldp)
 import App.State (State, init)
 import App.View.Layout (view)
-import Control.Monad.Eff (Eff)
-import DOM (DOM)
-import DOM.HTML.Types (HISTORY)
-import Pux (CoreEffects, App, start)
+-- import Control.Monad.Eff (Eff)
+import Effect (Effect)
+import Pux (App, start)
 import Pux.DOM.Events (DOMEvent)
 import Pux.Renderer.React (renderToDOM)
 
 type WebApp = App (DOMEvent -> Event) Event State
 
-type ClientEffects = CoreEffects (history :: HISTORY, dom :: DOM)
-
-main :: String -> State -> Eff ClientEffects WebApp
+main :: String -> State -> Effect WebApp
 main url state =
 
   -- | Start the app.

@@ -5,7 +5,5 @@ import Pux (EffModel, noEffects)
 
 data Event = Replace State
 
--- type AppEffects fx = (| fx)
-
-foldp :: ∀ fx. Event -> State -> EffModel State Event fx
+foldp :: Event -> State -> EffModel State Event
 foldp (Replace s) _ = noEffects s
